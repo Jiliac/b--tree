@@ -32,7 +32,7 @@ class Node:
         for i in range(len(self.keys)):
             if k <= self.keys[0]:
                 return self.children[i].search(k)
-        # Above all the keys, so return last child.
+        # Not under all the above keys, so return last child.
         return self.children[-1].search(k)
 
     def insert(self, k):
