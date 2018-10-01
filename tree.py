@@ -36,8 +36,37 @@ class Node:
         return self.children[-1].search(k)
 
     def insert(self, k):
-        # @TODO
-        pass
+        insertion_target = None
+        splitted_node = None
+
+        """
+        @TODO: Handle initialization case. There is no children yet,
+        """
+        if len(self.children) == 0: # REMOVE THIS ONCE INIT HANDLED.
+            return
+
+        # Same as for search
+        for i in range(len(self.keys)):
+            if k <= self.keys[0]:
+                insertion_target = self.children[i]
+        if insertion_target is None:
+            # Not under all the above keys, so target is the last child.
+            insertion_target = self.children[-1]
+
+        sub_splitted_node = insertion_target.insert(k)
+
+        """
+        @TODO: Handle the splitting.
+        - If can handle the sub_splitted_node, then insert in the children with
+          appropriate key.
+        - Otherwise, split this node and:
+          - Return the second part to the caller (via 'splitted_node') if this
+            isn't the root.
+          - However, if this the root, need to create new root (what's returned
+            does not matter).
+        """
+
+        return splitted_node
 
     def __str__(self):
         ret = ""
