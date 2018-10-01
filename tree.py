@@ -10,17 +10,28 @@ class Course():
         self.title = title
         self.instructor = instructor
 
+    def __lt__(self, other):
+        self_key, other_key = Course_Key(self), Course_Key(other)
+        return self_key.is_less(other_key)
+    def __eq__(self, other):
+        self_key, other_key = Course_Key(self), Course_Key(other)
+        return self_key.is_equal(other_key)
+
+    def __str__(self):
+        return "(tid:{} #class:CS{}, size:{} title: '{}' prof: '{}')".format(
+                self.tid, self.number, self.size, self.title, self.instructor)
+
 class Course_Key():
     def __init__(self, course):
         self.number = course.number
         self.size = course.size
 
     def is_less(self, other):
-        if self.number > other.number:
-            return False
-        if self.size > other.size:
-            return False
-        return True
+        if self.number < other.number:
+            return True
+        elif self.number == other.number and self.size < other.size:
+            return True
+        return False
 
     def is_equal(self, other):
         if self.number != other.number:
@@ -44,7 +55,10 @@ class Leaf:
         return None
 
     def __str__(self):
-        return str(self.values)
+        ret = ""
+        for val in self.values:
+            ret += "{} ".format(val)
+        return ret[:-1]
     def to_str(self, depth):
         return str(self)
 
@@ -69,7 +83,7 @@ class Node:
     def insert(self, key, new_child):
         #print("NODE INSERT: {} (key: {})".format(new_child, key))
         for i in range(len(self.keys)):
-            if key < self.keys[i]:
+            if key.is_less(self.keys[i]):
                 self.keys.insert(i, key)
                 self.children.insert(i+1, new_child)
                 return
@@ -104,6 +118,7 @@ def tree_insert(data, root):
     n = root
     stack = []
     new_root = None
+    data_key = Course_Key(data)
 
     # Handle init case when root is empty
     if len(root.children) == 0:
@@ -113,12 +128,16 @@ def tree_insert(data, root):
     elif len(root.children) == 1:
         second_leaf = Leaf(values=[data])
         child = root.children[0]
-        if data < child.values[0]:
+        val_key = Course_Key(child.values[0])
+
+        if data_key.is_equal(val_key):
+            return
+        elif data_key.is_less(val_key):
             root.children = [second_leaf, child]
             root.keys = [data]
         else:
             root.children.append(second_leaf)
-            root.keys = [child.values[0]]
+            root.keys = [val_key]
         return new_root
 
     # Search where blocks belong.
@@ -127,19 +146,19 @@ def tree_insert(data, root):
     while type(n) is not Leaf:
         stack.append(n)
         q = len(n.children)
-        if data <= n.keys[0]:
+        if data_key.is_less(n.keys[0]):
             n = n.children[0]
-        elif data > n.keys[-1]: # -1 = q-2
+        elif not data_key.is_less(n.keys[-1]): # -1 = q-2
             n = n.children[-1] # -1 = q-1
         else:
             for i in range(1, len(n.keys)):
-                if data <= n.keys[i]:
+                if data_key.is_less(n.keys[i]):
                     n = n.children[i]
                     break
 
     # Make sure k is not already inserted in the tree.
     for leaf_value in n.values:
-        if leaf_value == data:
+        if data_key.is_equal(leaf_value):
             return new_root
 
     if len(n.values) < TREE_ORDER: # not full
@@ -160,7 +179,7 @@ def tree_insert(data, root):
     new.values = temp.values[j:]
     print("n: {}\tnew: {}".format(n, new))
 
-    key = temp.values[j-1]
+    key = Course_Key(temp.values[j-1])
 
     while True:
         if len(stack) == 0:
@@ -186,7 +205,7 @@ def tree_insert(data, root):
         new.keys = temp.keys[j:]
         new.children = temp.children[j:]
 
-        key = temp.keys[j-1]
+        key = Course_Key(temp.keys[j-1])
 
 # Util: "deep" list copy
 def cpy(old_list):
