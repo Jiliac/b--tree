@@ -42,38 +42,16 @@ class Node:
         # Children can be internal nodes or leaf node.
         return self.children[-1].search(k)
 
-    def insert(self, k):
-        insertion_target = None
-        splitted_node = None # returned up if necessary.
-
-        """
-        @TODO: Handle initialization case. There is no children yet,
-        """
-        if len(self.children) == 0: # REMOVE THIS ONCE INIT HANDLED.
-            return
-
-        # Same as for search
+    def insert(self, key, new_child):
         for i in range(len(self.keys)):
-            if k <= self.keys[0]:
-                insertion_target = self.children[i]
-        if insertion_target is None:
-            # Not under all the above keys, so target is the last child.
-            insertion_target = self.children[-1]
+            if key < self.keys[i]:
+                self.keys.insert(i, key)
+                self.children.insert(i, new_child)
+                return
 
-        sub_splitted_node = insertion_target.insert(k)
-
-        """
-        @TODO: Handle the splitting.
-        - If can handle the sub_splitted_node, then insert in the children with
-          appropriate key.
-        - Otherwise, split this node and:
-          - Return the second part to the caller (via 'splitted_node') if this
-            isn't the root.
-          - However, if this the root, need to create new root (what's returned
-            does not matter).
-        """
-
-        return splitted_node # new
+        # Not under any key, so above all of them.
+        self.keys.append(key)
+        self.children.append(new_child)
 
     def __str__(self):
         ret = ""
@@ -136,4 +114,29 @@ def tree_insert(data, root):
     n = Leaf(values=temp.values[:j], next_leaf=new)
     new.values = temp.values[j:]
 
-    k = temp.values[j]
+    key = temp.values[j]
+
+    while True:
+        if len(stack) == 0:
+            root = Node()
+            root.keys = [key]
+            root.children = [n, new]
+            return
+
+        n = stack.pop()
+        if len(n.children) < TREE_ORDER:
+            n.insert(key, new)
+            return
+
+        temp = Node()
+        temp.keys = n.keys
+        temp.children = n.children
+        temp.insert(key, new)
+        new = Node()
+        j = (TREE_ORDER+1)/2
+        n.keys = temp.keys[:j-1]
+        n.children = temp.keys[:j]
+        new.keys = temp.keys[j:]
+        new.children = temp.children[j:]
+
+        key = temp.keys[j]
