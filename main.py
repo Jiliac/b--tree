@@ -4,6 +4,34 @@ from random import randint # For insert testing.
 
 from tree import *
 
+import csv
+
+L1 = [] # course number
+L2 = [] # course title
+L3 = [] # instructor
+L4 = [] # class size
+
+
+data_table = []
+
+with open('CoursesOffered_2018Spring.csv', newline='') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        L1.append(int(row[0].replace("CS","")))
+        L2.append(row[1])
+        L3.append(row[2])
+        L4.append(int(row[3]))
+
+# collecting all tuple into list 'data_table'
+for i in range(len(L1)):
+    temp_tuplelist = []
+    temp_tuplelist.append(i+1) # tuple id starting from 1
+    temp_tuplelist.append(L1[i])
+    temp_tuplelist.append(L2[i])
+    temp_tuplelist.append(L3[i])
+    temp_tuplelist.append(L4[i])
+    data_table.append(temp_tuplelist)
+
 def basic_tree_test():
     # Test very simple tree printing.
     right_leaf = Leaf([4, 5])
