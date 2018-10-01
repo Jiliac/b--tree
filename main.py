@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from random import randint # For insert testing.
+
 from tree import *
 
 DO_TEST = True
@@ -23,6 +25,12 @@ if DO_TEST:
     child_node.depth = 1
     above_node.keys = [5]
     above_node.children = [child_node]
-    print("Above node:\n{}".format(above_node))
+    print("Above node:\n{}\n".format(above_node))
     # This above_node should not happen in real. Only one child node isn't
     # right.
+
+    # Insertion test.
+    inserted_node = Node(0)
+    for i in range(10):
+        inserted_node.insert(randint(0, 100))
+    print("Inserted node:\n{}\n".format(inserted_node))

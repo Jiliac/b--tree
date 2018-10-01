@@ -13,17 +13,31 @@ class Leaf:
 
 class Node:
     def __init__(self, depth):
+        """
+        @TODO: keys and children need some initialization. To be done with
+        insert...
+        """
+
         self.depth = depth
 
         self.keys = []
         self.children = []  # Should always be one less key than children.
 
-    def search(self, k): # From wikipedia. Maybe needs correcting to match book algorithm.
+    def search(self, k):
+        """
+        From wikipedia. Maybe needs correcting to match book algorithm.
+        @TODO.
+        """
+
         for i in range(len(self.keys)):
             if k <= self.keys[0]:
                 return self.children[i].search(k)
         # Above all the keys, so return last child.
         return self.children[-1].search(k)
+
+    def insert(self, k):
+        # @TODO
+        pass
 
     def __str__(self):
         ret = ""
