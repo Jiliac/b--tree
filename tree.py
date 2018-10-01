@@ -5,6 +5,9 @@ class Leaf:
         self.values = values
         self.next_leaf = next_leaf
 
+    def search(self, k):
+        return self.values
+
     def __str__(self):
         return str(self.values)
 
@@ -14,6 +17,13 @@ class Node:
 
         self.keys = []
         self.children = []  # Should always be one less key than children.
+
+    def search(self, k): # From wikipedia. Maybe needs correcting to match book algorithm.
+        for i in range(len(self.keys)):
+            if k <= self.keys[0]:
+                return self.children[i].search(k)
+        # Above all the keys, so return last child.
+        return self.children[-1].search(k)
 
     def __str__(self):
         ret = ""
