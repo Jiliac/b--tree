@@ -8,6 +8,10 @@ class Leaf:
     def search(self, k):
         return self.values
 
+    def insert(self, k):
+        # @TODO
+        return None
+
     def __str__(self):
         return str(self.values)
 
@@ -33,11 +37,12 @@ class Node:
             if k <= self.keys[0]:
                 return self.children[i].search(k)
         # Not under all the above keys, so return last child.
+        # Children can be internal nodes or leaf node.
         return self.children[-1].search(k)
 
     def insert(self, k):
         insertion_target = None
-        splitted_node = None
+        splitted_node = None # returned up if necessary.
 
         """
         @TODO: Handle initialization case. There is no children yet,
@@ -66,7 +71,7 @@ class Node:
             does not matter).
         """
 
-        return splitted_node
+        return splitted_node # new
 
     def __str__(self):
         ret = ""
