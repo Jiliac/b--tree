@@ -5,6 +5,9 @@ class Leaf:
         self.values = values
         self.next_leaf = next_leaf
 
+    def __str__(self):
+        return str(self.values)
+
 class Node:
     def __init__(self, depth):
         self.depth = depth
@@ -16,9 +19,13 @@ class Node:
         ret = ""
 
         for i in range(len(self.children)):
+            child = self.children[i]
             ret += "| " * self.depth
-            ret += "child {}: ".format(i)
-            ret += "{}\n".format(self.children[i])
+            ret += "child {}:\n".format(i)
+            if type(child) is Leaf:
+                ret += "| " * (self.depth+1) + "{}\n".format(child) 
+            else:
+                ret += "{}\n".format(child)
 
             if i == len(self.children) - 1: # We are at the end. No more key.
                 continue
