@@ -45,16 +45,11 @@ class Leaf:
 
     def __str__(self):
         return str(self.values)
+    def to_str(self, depth):
+        return str(self)
 
 class Node:
-    def __init__(self, depth):
-        """
-        @TODO: keys and children need some initialization. To be done with
-        insert...
-        """
-
-        self.depth = depth
-
+    def __init__(self):
         self.keys = []
         self.children = []  # Should always be one less key than children.
 
@@ -83,24 +78,25 @@ class Node:
         self.children.append(new_child)
 
     def __str__(self):
+        return self.to_str()
+    def to_str(self, depth=0):
         ret = ""
 
         for i in range(len(self.children)):
             child = self.children[i]
-            ret += "| " * self.depth
+            ret += "| " * depth
             ret += "child {}:\n".format(i)
             if type(child) is Leaf:
-                ret += "| " * (self.depth+1) + "{}\n".format(child) 
+                ret += "| " * (depth+1) + "{}\n".format(child.to_str(depth+1))
             else:
-                ret += "{}\n".format(child)
+                ret += "{}\n".format(child.to_str(depth+1))
 
             if i == len(self.children) - 1: # We are at the end. No more key.
                 continue
-            ret += "| " * self.depth
+            ret += "| " * depth
             ret += "key {}={}\n".format(i, self.keys[i])
 
         return ret
-
 
 def tree_insert(data, root):
     # Initialize variables
