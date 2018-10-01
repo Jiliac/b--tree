@@ -4,7 +4,7 @@ from random import randint # For insert testing.
 
 from tree import *
 
-DO_TEST = True
+DO_TEST = False
 
 if DO_TEST:
     # Test very simple tree printing.
@@ -34,3 +34,9 @@ if DO_TEST:
     for i in range(10):
         inserted_node.insert(randint(0, 100))
     print("Inserted node:\n{}\n".format(inserted_node))
+
+KEY_TEST = True
+if KEY_TEST:
+    dummy_course = Course(tid=0, number="301", size="21")
+    key = Course_Key(dummy_course)
+    print("key:", key)

@@ -3,11 +3,17 @@ from bisect import insort
 TREE_ORDER = 3
 
 class Course():
-    def __init__(self, number, size, title="", instructor=""):
+    def __init__(self, tid, number, size, title="", instructor=""):
+        self.tid = tid
         self.number = number
         self.size = size
         self.title = title
         self.instructor = instructor
+
+class Course_Key():
+    def __init__(self, course):
+        self.number = course.number
+        self.size = course.size
 
     def is_less(self, other):
         if self.number > other.number:
@@ -21,6 +27,9 @@ class Course():
             return False
         if self.size != other.size:
             return False
+
+    def __str__(self):
+        return "(CS{}, size={})".format(self.number, self.size)
 
 class Leaf:
     def __init__(self, values=[], next_leaf=None):
