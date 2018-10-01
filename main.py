@@ -35,7 +35,9 @@ def key_test():
 def insert_test():
     root = Node()
     for i in range(10):
-        tree_insert(randint(0, 100), root)
+        new_root = tree_insert(randint(0, 100), root)
+        if new_root is not None:
+            root = new_root
         print("(i:{}) inserted tree:\n{}\n".format(i, root))
 
 

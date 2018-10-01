@@ -96,7 +96,7 @@ class Node:
             ret += "| " * depth
             ret += "key {}={}\n".format(i, self.keys[i])
 
-        return ret
+        return ret[:-1]
 
 def tree_insert(data, root):
     # Initialize variables
@@ -124,7 +124,6 @@ def tree_insert(data, root):
     # As a result n is the proper leaf to insert and stack are the parent nodes
     # in case of a split.
     while type(n) is not Leaf:
-        print("n type:", type(n))
         stack.append(n)
         q = len(n.children)
         if data <= n.keys[0]:
@@ -180,7 +179,7 @@ def tree_insert(data, root):
 
         j = (TREE_ORDER+1)//2
         n.keys = temp.keys[:j-1]
-        n.children = temp.keys[:j]
+        n.children = temp.children[:j]
         new.keys = temp.keys[j:]
         new.children = temp.children[j:]
 
