@@ -2,6 +2,26 @@ from bisect import insort
 
 TREE_ORDER = 3
 
+class Course():
+    def __init__(self, number, size, title="", instructor=""):
+        self.number = number
+        self.size = size
+        self.title = title
+        self.instructor = instructor
+
+    def is_less(self, other):
+        if self.number > other.number:
+            return False
+        if self.size > other.size:
+            return False
+        return True
+
+    def is_equal(self, other):
+        if self.number != other.number:
+            return False
+        if self.size != other.size:
+            return False
+
 class Leaf:
     def __init__(self, values=[], next_leaf=None):
         self.values = values
