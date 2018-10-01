@@ -67,10 +67,11 @@ class Node:
         return self.children[-1].search(k)
 
     def insert(self, key, new_child):
+        #print("NODE INSERT: {} (key: {})".format(new_child, key))
         for i in range(len(self.keys)):
             if key < self.keys[i]:
                 self.keys.insert(i, key)
-                self.children.insert(i, new_child)
+                self.children.insert(i+1, new_child)
                 return
 
         # Not under any key, so above all of them.
@@ -146,7 +147,7 @@ def tree_insert(data, root):
         return new_root
 
     # Leaf is full
-    temp = Leaf(values=n.values)
+    temp = Leaf(values=cpy(n.values))
     insort(temp.values, data)
     new = Leaf(next_leaf=n.next_leaf)
     j = len(temp.values) # = p_leaf + 1
@@ -154,10 +155,12 @@ def tree_insert(data, root):
         j = j // 2
     else: # Ceiling
         j = (j//2) + 1
-    n = Leaf(values=temp.values[:j], next_leaf=new)
+    n.values = temp.values[:j]
+    n.next_leaf = new
     new.values = temp.values[j:]
+    print("n: {}\tnew: {}".format(n, new))
 
-    key = temp.values[j]
+    key = temp.values[j-1]
 
     while True:
         if len(stack) == 0:
@@ -172,8 +175,8 @@ def tree_insert(data, root):
             return new_root
 
         temp = Node()
-        temp.keys = n.keys
-        temp.children = n.children
+        temp.keys = cpy(n.keys)
+        temp.children = cpy(n.children)
         temp.insert(key, new)
         new = Node()
 
@@ -183,4 +186,8 @@ def tree_insert(data, root):
         new.keys = temp.keys[j:]
         new.children = temp.children[j:]
 
-        key = temp.keys[j]
+        key = temp.keys[j-1]
+
+# Util: "deep" list copy
+def cpy(old_list):
+    return [i for i in old_list]
