@@ -102,10 +102,29 @@ def tree_insert(data, root):
     # Initialize variables
     n = root
     stack = []
+    new_root = None
+
+    # Handle init case when root is empty
+    if len(root.children) == 0:
+        first_leaf = Leaf(values=[data])
+        root.children = [first_leaf]
+        return new_root
+    elif len(root.children) == 1:
+        second_leaf = Leaf(values=[data])
+        child = root.children[0]
+        if data < child.values[0]:
+            root.children = [second_leaf, child]
+            root.keys = [data]
+        else:
+            root.children.append(second_leaf)
+            root.keys = [child.values[0]]
+        return new_root
 
     # Search where blocks belong.
-    # As a result n is the proper leaf to insert and stack are the parent nodes in case of a split.
+    # As a result n is the proper leaf to insert and stack are the parent nodes
+    # in case of a split.
     while type(n) is not Leaf:
+        print("n type:", type(n))
         stack.append(n)
         q = len(n.children)
         if data <= n.keys[0]:
@@ -121,11 +140,11 @@ def tree_insert(data, root):
     # Make sure k is not already inserted in the tree.
     for leaf_value in n.values:
         if leaf_value == data:
-            return
+            return new_root
 
     if len(n.values) < TREE_ORDER: # not full
         insort(n.values, data)
-        return
+        return new_root
 
     # Leaf is full
     temp = Leaf(values=n.values)
@@ -133,9 +152,9 @@ def tree_insert(data, root):
     new = Leaf(next_leaf=n.next_leaf)
     j = len(temp.values) # = p_leaf + 1
     if j % 2 == 0:
-        j /= 2
-    else:
-        j = (j/2) + 1
+        j = j // 2
+    else: # Ceiling
+        j = (j//2) + 1
     n = Leaf(values=temp.values[:j], next_leaf=new)
     new.values = temp.values[j:]
 
@@ -143,22 +162,23 @@ def tree_insert(data, root):
 
     while True:
         if len(stack) == 0:
-            root = Node()
-            root.keys = [key]
-            root.children = [n, new]
-            return
+            new_root = Node()
+            new_root.keys = [key]
+            new_root.children = [n, new]
+            return new_root
 
         n = stack.pop()
         if len(n.children) < TREE_ORDER:
             n.insert(key, new)
-            return
+            return new_root
 
         temp = Node()
         temp.keys = n.keys
         temp.children = n.children
         temp.insert(key, new)
         new = Node()
-        j = (TREE_ORDER+1)/2
+
+        j = (TREE_ORDER+1)//2
         n.keys = temp.keys[:j-1]
         n.children = temp.keys[:j]
         new.keys = temp.keys[j:]
